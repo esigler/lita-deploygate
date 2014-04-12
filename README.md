@@ -1,8 +1,11 @@
 # lita-deploygate
 
-[![Build Status](https://travis-ci.org/esigler/lita-deploygate.png?branch=master)](https://travis-ci.org/esigler/lita-deploygate)
-[![Code Climate](https://codeclimate.com/github/esigler/lita-deploygate.png)](https://codeclimate.com/github/esigler/lita-deploygate)
-[![Coverage Status](https://coveralls.io/repos/esigler/lita-deploygate/badge.png?branch=master)](https://coveralls.io/r/esigler/lita-deploygate?branch=master)
+[![Build Status](https://img.shields.io/travis/esigler/lita-deploygate/master.svg)](https://travis-ci.org/esigler/lita-deploygate)
+[![MIT License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://tldrlegal.com/license/mit-license)
+[![RubyGems :: RMuh Gem Version](http://img.shields.io/gem/v/lita-deploygate.svg)](https://rubygems.org/gems/lita-deploygate)
+[![Coveralls Coverage](https://img.shields.io/coveralls/esigler/lita-deploygate/master.svg)](https://coveralls.io/r/esigler/lita-deploygate)
+[![Code Climate](https://img.shields.io/codeclimate/github/esigler/lita-deploygate.svg)](https://codeclimate.com/github/esigler/lita-deploygate)
+[![Gemnasium](https://img.shields.io/gemnasium/esigler/lita-deploygate.svg)](https://gemnasium.com/esigler/lita-deploygate)
 
 DeployGate (http://deploygate.com) handler for inviting and removing application collaborators.
 
