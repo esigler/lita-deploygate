@@ -17,6 +17,12 @@ describe Lita::Handlers::Deploygate, lita_handler: true do
     File.read('spec/files/members_remove.json')
   end
 
+  def grab_request(method, status, body)
+    response = double('Faraday::Response', status: status, body: body)
+    expect_any_instance_of(Faraday::Connection).to \
+      receive(method.to_sym).and_return(response)
+  end
+
   it { routes_command('deploygate add username abc123').to(:add) }
   it { routes_command('deploygate add foo@example.com abc123').to(:add) }
   it { routes_command('deploygate remove username abc123').to(:remove) }
@@ -42,8 +48,10 @@ describe Lita::Handlers::Deploygate, lita_handler: true do
 
   describe 'without valid config' do
     it 'errors out on any command' do
-      Lita.config.handlers.deploygate.app_names = { 'abc123' => 'path/to/places' }
-      expect { send_command('dg list abc123') }.to raise_error('Missing config')
+      Lita.config.handlers.deploygate.app_names = { 'abc123' =>
+                                                    'path/to/places' }
+      expect { send_command('dg list abc123') }.to raise_error('Missing ' \
+                                                               'config')
     end
   end
 
@@ -51,90 +59,85 @@ describe Lita::Handlers::Deploygate, lita_handler: true do
     before do
       Lita.config.handlers.deploygate.user_name = 'foo'
       Lita.config.handlers.deploygate.api_key = 'bar'
-      Lita.config.handlers.deploygate.app_names = { 'abc123' => 'path/to/places' }
+      Lita.config.handlers.deploygate.app_names = { 'abc123' =>
+                                                    'path/to/places' }
     end
 
     describe '#add' do
       it 'shows an ack when a username is added' do
-        response = double('Faraday::Response', status: 200, body: members_add)
-        expect_any_instance_of(Faraday::Connection).to receive(:post).once.and_return(response)
+        grab_request('post', 200, members_add)
         send_command('deploygate add username abc123')
         expect(replies.last).to eq('abc123: username added')
       end
 
       it 'shows an ack when an email is added' do
-        response = double('Faraday::Response', status: 200, body: members_add)
-        expect_any_instance_of(Faraday::Connection).to receive(:post).once.and_return(response)
+        grab_request('post', 200, members_add)
         send_command('deploygate add foo@example.com abc123')
         expect(replies.last).to eq('abc123: foo@example.com added')
       end
 
-      it 'shows a warning if the short name does not exist when adding someone' do
+      it 'shows a warning if the app name does not exist' do
         send_command('deploygate add username doesnotexist')
         expect(replies.last).to eq('doesnotexist: unknown application name')
       end
 
-      it 'shows an error if there was an issue adding someone' do
-        response = double('Faraday::Response', status: 500, body: nil)
-        expect_any_instance_of(Faraday::Connection).to receive(:post).once.and_return(response)
+      it 'shows an error if there was an issue with the request' do
+        grab_request('post', 500, nil)
         send_command('deploygate add username abc123')
-        expect(replies.last).to eq('There was an error making the request to DeployGate')
+        expect(replies.last).to eq('There was an error making the request ' \
+                                   'to DeployGate')
       end
     end
 
     describe '#remove' do
       it 'shows an ack when a username is removed' do
-        response = double('Faraday::Response', status: 200, body: members_remove)
-        expect_any_instance_of(Faraday::Connection).to receive(:delete).once.and_return(response)
+        grab_request('delete', 200, members_remove)
         send_command('deploygate remove username abc123')
         expect(replies.last).to eq('abc123: username removed')
       end
 
       it 'shows an ack when an email is removed' do
-        response = double('Faraday::Response', status: 200, body: members_remove)
-        expect_any_instance_of(Faraday::Connection).to receive(:delete).once.and_return(response)
+        grab_request('delete', 200, members_remove)
         send_command('deploygate remove foo@example.com abc123')
         expect(replies.last).to eq('abc123: foo@example.com removed')
       end
 
-      it 'shows a warning if the short name does not exist when removing someone' do
+      it 'shows a warning if the app name does not exist' do
         send_command('deploygate remove username doesnotexist')
         expect(replies.last).to eq('doesnotexist: unknown application name')
       end
 
-      it 'shows an error if there was an issue removing someone' do
-        response = double('Faraday::Response', status: 500, body: nil)
-        expect_any_instance_of(Faraday::Connection).to receive(:delete).once.and_return(response)
+      it 'shows an error if there was an issue with the request' do
+        grab_request('delete', 500, nil)
         send_command('deploygate remove username abc123')
-        expect(replies.last).to eq('There was an error making the request to DeployGate')
+        expect(replies.last).to eq('There was an error making the request ' \
+                                   'to DeployGate')
       end
     end
 
     describe '#list' do
       it 'shows a list of users when there are any' do
-        response = double('Faraday::Response', status: 200, body: members_full)
-        expect_any_instance_of(Faraday::Connection).to receive(:get).once.and_return(response)
+        grab_request('get', 200, members_full)
         send_command('deploygate list abc123')
         expect(replies.last).to eq('abc123: username, role: 1')
       end
 
       it 'shows an empty list of users when there arent any' do
-        response = double('Faraday::Response', status: 200, body: members_empty)
-        expect_any_instance_of(Faraday::Connection).to receive(:get).once.and_return(response)
+        grab_request('get', 200, members_empty)
         send_command('deploygate list abc123')
         expect(replies.last).to eq('abc123: No users')
       end
 
-      it 'shows a warning if the short name does not exist when listing' do
+      it 'shows a warning if the app name does not exist' do
         send_command('deploygate list doesnotexist')
         expect(replies.last).to eq('doesnotexist: unknown application name')
       end
 
-      it 'shows an error if there was an issue listing users' do
-        response = double('Faraday::Response', status: 500, body: nil)
-        expect_any_instance_of(Faraday::Connection).to receive(:get).once.and_return(response)
+      it 'shows an error if there was an issue with the request' do
+        grab_request('get', 500, nil)
         send_command('deploygate list abc123')
-        expect(replies.last).to eq('There was an error making the request to DeployGate')
+        expect(replies.last).to eq('There was an error making the request ' \
+                                   'to DeployGate')
       end
     end
   end

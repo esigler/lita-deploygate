@@ -1,8 +1,5 @@
 ClassLength:
-  Max: 400
-
-CyclomaticComplexity:
-  Max: 10
+  Max: 106
 
 Documentation:
   Enabled: false
@@ -10,8 +7,5 @@ Documentation:
 FileName:
   Enabled: false
 
-LineLength:
-  Max: 105
-
 MethodLength:
-  Max: 30
+  Max: 21

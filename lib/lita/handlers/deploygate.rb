@@ -6,8 +6,7 @@ module Lita
         :add,
         command: true,
         help: {
-          'deploygate add <username or email> <short name>' =>
-          'Add <username or email> to <short name>'
+          t('help.add_key') => t('help.add_value')
         }
       )
 
@@ -16,8 +15,7 @@ module Lita
         :remove,
         command: true,
         help: {
-          'deploygate remove <username or email> <short name>' =>
-          'Remove <username or email> from <short name>'
+          t('help.remove_key') => t('help.remove_value')
         }
       )
 
@@ -26,8 +24,7 @@ module Lita
         :list,
         command: true,
         help: {
-          'deploygate list <short name>' =>
-          'List all users associated with <short name>'
+          t('help.list_key') => t('help.list_value')
         }
       )
 
@@ -38,61 +35,58 @@ module Lita
       end
 
       def add(response)
-        short_name = response.matches[0][2]
-        user_identifier = response.matches[0][1]
-        if valid_app_name?(short_name)
-          result = api_request('post',
-                               "/#{app_path(short_name)}/members",
-                               'users' => "[#{user_identifier}]")
-          if result
-            response.reply("#{short_name}: #{user_identifier} added")
-          else
-            response.reply('There was an error making the request to DeployGate')
-          end
-        else
-          response.reply("#{short_name}: unknown application name")
-        end
+        app = response.matches[0][2]
+        user = response.matches[0][1]
+        response.reply(change(app, 'post', 'add.success', user))
       end
 
       def remove(response)
-        short_name = response.matches[0][2]
-        user_identifier = response.matches[0][1]
-        if valid_app_name?(short_name)
-          result = api_request('delete',
-                               "/#{app_path(short_name)}/members",
-                               'users' => "[#{user_identifier}]")
-          if result
-            response.reply("#{short_name}: #{user_identifier} removed")
-          else
-            response.reply('There was an error making the request to DeployGate')
-          end
-        else
-          response.reply("#{short_name}: unknown application name")
-        end
+        app = response.matches[0][2]
+        user = response.matches[0][1]
+        response.reply(change(app, 'delete', 'remove.success', user))
       end
 
       def list(response)
-        short_name = response.matches[0][1]
-        if valid_app_name?(short_name)
-          result = api_request('get', "/#{app_path(short_name)}/members")
-          if result
-            users = result['results']['users']
-            if users.count > 0
-              users.each do |user|
-                response.reply("#{short_name}: #{user['name']}, role: #{user['role']}")
-              end
-            else
-              response.reply("#{short_name}: No users")
-            end
-          else
-            response.reply('There was an error making the request to DeployGate')
+        app = response.matches[0][1]
+        users = members(app)
+        if users.is_a? Array
+          response.reply(t('list.none', app: app)) unless users.count > 0
+          users.each do |user|
+            response.reply(t('list.user', app: app, user: user['name'],
+                                          role: user['role']))
           end
         else
-          response.reply("#{short_name}: unknown application name")
+          response.reply(users)
         end
       end
 
       private
+
+      def change(app, method, success_key, user)
+        if valid_app_name?(app)
+          if api_request(method, "/#{app_path(app)}/members",
+                         'users' => "[#{user}]")
+            t(success_key, app: app, user: user)
+          else
+            t('error.request')
+          end
+        else
+          t('error.unknown_app', app: app)
+        end
+      end
+
+      def members(app)
+        if valid_app_name?(app)
+          result = api_request('get', "/#{app_path(app)}/members")
+          if result
+            result['results']['users']
+          else
+            t('error.request')
+          end
+        else
+          t('error.unknown_app', app: app)
+        end
+      end
 
       def valid_app_name?(name)
         Lita.config.handlers.deploygate.app_names.key?(name)
@@ -119,8 +113,7 @@ module Lita
           req.url url, args
         end
 
-        if http_response.status == 200 ||
-           http_response.status == 201
+        if http_response.status == 200 || http_response.status == 201
           MultiJson.load(http_response.body)
         else
           Lita.logger.error("HTTP #{method} for #{url} with #{args} " \

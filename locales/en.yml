@@ -2,3 +2,20 @@ en:
   lita:
     handlers:
       deploygate:
+        add:
+          success: "%{app}: %{user} added"
+        error:
+          request: There was an error making the request to DeployGate
+          unknown_app: "%{app}: unknown application name"
+        help:
+          add_key: deploygate add <username or email> <short name>
+          add_value: Add <username or email> to <short name>
+          list_key: deploygate list <short name>
+          list_value: List all users associated with <short name>
+          remove_key: deploygate remove <username or email> <short name>
+          remove_value: Remove <username or email> from <short name>
+        list:
+          none: "%{app}: No users"
+          user: "%{app}: %{user}, role: %{role}"
+        remove:
+          success: "%{app}: %{user} removed"
