@@ -99,7 +99,7 @@ module Lita
       def api_request(method, component, args = {})
         if Lita.config.handlers.deploygate.user_name.nil? ||
            Lita.config.handlers.deploygate.api_key.nil?
-          Lita.logger.error('Missing API key or Page ID for Deploygate')
+          Lita.logger.error('Missing API key or Username for Deploygate')
           fail 'Missing config'
         end
 
