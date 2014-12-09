@@ -1,11 +1,7 @@
-ClassLength:
-  Max: 106
-
 Documentation:
-  Enabled: false
+  Exclude:
+    - lib/lita/handlers/deploygate.rb
 
 FileName:
-  Enabled: false
-
-MethodLength:
-  Max: 21
+  Exclude:
+    - lib/lita-deploygate.rb

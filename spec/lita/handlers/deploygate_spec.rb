@@ -35,29 +35,6 @@ describe Lita::Handlers::Deploygate, lita_handler: true do
     end
   end
 
-  describe '.default_config' do
-    it 'sets user_name to nil' do
-      expect(Lita.config.handlers.deploygate.user_name).to be_nil
-    end
-
-    it 'sets api_key to nil' do
-      expect(Lita.config.handlers.deploygate.api_key).to be_nil
-    end
-
-    it 'sets app_names to nil' do
-      expect(Lita.config.handlers.deploygate.app_names).to be_nil
-    end
-  end
-
-  describe 'without valid config' do
-    it 'errors out on any command' do
-      Lita.config.handlers.deploygate.app_names = { 'abc123' =>
-                                                    'path/to/places' }
-      expect { send_command('dg list abc123') }.to raise_error('Missing ' \
-                                                               'config')
-    end
-  end
-
   describe 'with valid config' do
     before do
       Lita.config.handlers.deploygate.user_name = 'foo'
