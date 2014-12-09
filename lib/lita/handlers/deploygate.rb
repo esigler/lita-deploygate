@@ -103,7 +103,7 @@ module Lita
           fail 'Missing config'
         end
 
-        url = "https://deploygate.com/api/users/" \
+        url = 'https://deploygate.com/api/users/' \
               "#{Lita.config.handlers.deploygate.user_name}" \
               "#{component}"
 

@@ -23,14 +23,17 @@ describe Lita::Handlers::Deploygate, lita_handler: true do
       receive(method.to_sym).and_return(response)
   end
 
-  it { routes_command('deploygate add username abc123').to(:add) }
-  it { routes_command('deploygate add foo@example.com abc123').to(:add) }
-  it { routes_command('deploygate remove username abc123').to(:remove) }
-  it { routes_command('deploygate remove foo@example.com abc123').to(:remove) }
-  it { routes_command('deploygate list abc123').to(:list) }
-  it { routes_command('dg add username abc123').to(:add) }
-  it { routes_command('dg remove username abc123').to(:remove) }
-  it { routes_command('dg list abc123').to(:list) }
+  %w(deploygate dg).each do |name|
+    it do
+      is_expected.to route_command("#{name} add username abc123").to(:add)
+      is_expected.to route_command("#{name} add foo@example.com abc123")
+        .to(:add)
+      is_expected.to route_command("#{name} remove username abc123").to(:remove)
+      is_expected.to route_command("#{name} remove foo@example.com abc123")
+        .to(:remove)
+      is_expected.to route_command("#{name} list abc123").to(:list)
+    end
+  end
 
   describe '.default_config' do
     it 'sets user_name to nil' do
