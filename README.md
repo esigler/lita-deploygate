@@ -7,7 +7,7 @@
 [![Code Climate](https://img.shields.io/codeclimate/github/esigler/lita-deploygate.svg)](https://codeclimate.com/github/esigler/lita-deploygate)
 [![Gemnasium](https://img.shields.io/gemnasium/esigler/lita-deploygate.svg)](https://gemnasium.com/esigler/lita-deploygate)
 
-DeployGate (http://deploygate.com) handler for inviting and removing application collaborators.
+A [Deploygate](http://deploygate.com) plugin for [Lita](https://github.com/jimmycuadra/lita).
 
 ## Installation
 

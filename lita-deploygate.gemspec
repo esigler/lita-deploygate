@@ -3,8 +3,8 @@ Gem::Specification.new do |spec|
   spec.version       = '0.1.0'
   spec.authors       = ['Eric Sigler']
   spec.email         = ['me@esigler.com']
-  spec.description   = 'Add, remove members to Deploygate releases'
-  spec.summary       = 'Add, remove members to Deploygate releases'
+  spec.description   = 'A Deploygate plugin for Lita'
+  spec.summary       = 'A Deploygate plugin for Lita'
   spec.homepage      = 'http://github.com/esigler/lita-deploygate'
   spec.license       = 'MIT'
   spec.metadata      = { 'lita_plugin_type' => 'handler' }
