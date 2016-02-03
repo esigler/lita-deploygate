@@ -3,7 +3,6 @@ module Lita
     class Deploygate < Handler
       config :user_name, required: true
       config :api_key, required: true
-      config :default_app_id, required: true
       config :app_names
 
       route(
